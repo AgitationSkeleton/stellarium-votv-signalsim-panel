@@ -1,0 +1,45 @@
+{
+  "_note": "Curated radio-astronomy and SETI entries. RA/Dec are J2000 degrees. 'approximate' marks positions known only roughly (historic beams, moving probes).",
+  "objects": [
+    {"name": "Cassiopeia A", "category": "radio source", "ra": 350.850, "dec": 58.815, "description": "Brightest extrasolar radio source in the sky at low frequencies; remnant of a supernova seen around 1680."},
+    {"name": "Cygnus A", "category": "radio source", "ra": 299.868, "dec": 40.734, "description": "One of the strongest radio galaxies; twin jets feed lobes ~500,000 light-years apart."},
+    {"name": "Taurus A (Crab Nebula)", "category": "radio source", "ra": 83.633, "dec": 22.015, "description": "Supernova remnant of SN 1054 and the classic Taurus A radio source; contains the Crab pulsar."},
+    {"name": "Virgo A (M87)", "category": "radio source", "ra": 187.706, "dec": 12.391, "description": "Giant elliptical galaxy with a relativistic jet; its central black hole was imaged by the EHT in 2019."},
+    {"name": "Centaurus A", "category": "radio source", "ra": 201.365, "dec": -43.019, "description": "Nearest large radio galaxy, with radio lobes spanning about 8 degrees of sky."},
+    {"name": "Sagittarius A*", "category": "radio source", "ra": 266.417, "dec": -29.008, "description": "Compact radio source at the Galactic Centre, the Milky Way's 4-million-solar-mass black hole."},
+    {"name": "Hercules A", "category": "radio source", "ra": 252.784, "dec": 4.993, "description": "Powerful radio galaxy with spectacular ringed jets."},
+    {"name": "Fornax A", "category": "radio source", "ra": 50.674, "dec": -37.208, "description": "Bright southern radio galaxy (NGC 1316)."},
+    {"name": "Orion A", "category": "radio source", "ra": 83.822, "dec": -5.391, "description": "Thermal radio emission from the Orion Nebula's HII region."},
+    {"name": "3C 273", "category": "radio source", "ra": 187.278, "dec": 2.052, "description": "First quasar identified (1963); optically the brightest quasar in the sky."},
+    {"name": "3C 48", "category": "radio source", "ra": 24.422, "dec": 33.160, "description": "First radio source shown to have a quasi-stellar optical counterpart."},
+    {"name": "Pictor A", "category": "radio source", "ra": 79.957, "dec": -45.779, "description": "Radio galaxy with a hotspot ~800,000 light-years from its nucleus."},
+    {"name": "Hydra A", "category": "radio source", "ra": 139.524, "dec": -12.096, "description": "Radio galaxy at the heart of a cooling-flow galaxy cluster."},
+    {"name": "Cygnus X-1", "category": "radio source", "ra": 299.590, "dec": 35.202, "description": "First widely accepted black hole: an X-ray binary with radio jets."},
+
+    {"name": "Crab Pulsar (PSR B0531+21)", "category": "pulsar", "ra": 83.633, "dec": 22.014, "description": "33 ms pulsar powering the Crab Nebula; giant radio pulses."},
+    {"name": "Vela Pulsar (PSR B0833-45)", "category": "pulsar", "ra": 128.836, "dec": -45.176, "description": "Brightest persistent radio pulsar; 89 ms period with famous glitches."},
+    {"name": "PSR B1919+21", "category": "pulsar", "ra": 290.438, "dec": 21.884, "description": "First pulsar discovered (Jocelyn Bell Burnell, 1967); initially nicknamed LGM-1, 'Little Green Men'."},
+    {"name": "PSR B0329+54", "category": "pulsar", "ra": 53.247, "dec": 54.579, "description": "Brightest pulsar in the northern sky; a favourite target for amateur radio telescopes."},
+    {"name": "PSR B1937+21", "category": "pulsar", "ra": 294.911, "dec": 21.583, "description": "First millisecond pulsar discovered (1.56 ms)."},
+    {"name": "PSR B1257+12", "category": "pulsar", "ra": 195.015, "dec": 12.682, "description": "Host of the first confirmed exoplanets (1992), orbiting a pulsar."},
+    {"name": "PSR B1913+16 (Hulse-Taylor)", "category": "pulsar", "ra": 288.867, "dec": 16.108, "description": "Binary pulsar whose orbital decay confirmed gravitational-wave emission."},
+    {"name": "PSR J0437-4715", "category": "pulsar", "ra": 69.316, "dec": -47.252, "description": "Nearest and brightest millisecond pulsar; a precision timing reference."},
+
+    {"name": "Wow! signal", "category": "seti signal", "ra": 291.379, "dec": -26.950, "approximate": true, "description": "72-second narrowband signal near 1420 MHz detected by Big Ear on 15 Aug 1977. Never observed again. The horn beam leaves two candidate RA positions; the first is shown."},
+    {"name": "BLC1 (Proxima Centauri)", "category": "seti signal", "ra": 217.429, "dec": -62.680, "description": "982.002 MHz candidate seen by Breakthrough Listen at Parkes in 2019; later attributed to terrestrial interference."},
+    {"name": "SHGb02+14a", "category": "seti signal", "ra": 27.500, "dec": 14.000, "approximate": true, "description": "SETI@home candidate near 1420 MHz observed three times at Arecibo in 2003; most likely noise."},
+    {"name": "KIC 8462852 (Tabby's Star)", "category": "seti signal", "ra": 301.564, "dec": 44.457, "description": "Star with irregular dips of up to 22%; SETI searches found no artificial signals and dust is the leading explanation."},
+    {"name": "Ross 128 signal", "category": "seti signal", "ra": 176.937, "dec": 0.799, "description": "Unusual 2017 Arecibo signal near the red dwarf Ross 128, attributed to geostationary satellites."},
+    {"name": "HD 164595 signal", "category": "seti signal", "ra": 270.505, "dec": 29.024, "approximate": true, "description": "2015 RATAN-600 11 GHz transient; follow-ups found nothing and it is considered terrestrial interference."},
+    {"name": "FRB 20121102A", "category": "seti signal", "ra": 82.995, "dec": 33.148, "description": "First fast radio burst found to repeat, localised to a dwarf galaxy ~3 billion light-years away."},
+    {"name": "Lorimer Burst (FRB 010724)", "category": "seti signal", "ra": 19.525, "dec": -75.200, "approximate": true, "description": "The first fast radio burst ever recognised, found in archival 2001 Parkes data."},
+    {"name": "SGR 1935+2154", "category": "seti signal", "ra": 293.732, "dec": 21.897, "description": "Galactic magnetar that emitted a fast radio burst in April 2020, linking FRBs to magnetars."},
+    {"name": "Arecibo message target (M13)", "category": "seti signal", "ra": 250.423, "dec": 36.461, "description": "Destination of the 1974 Arecibo message, beamed toward globular cluster M13."},
+    {"name": "Hydrogen line (21 cm)", "category": "seti signal", "ra": 266.417, "dec": -29.008, "approximate": true, "description": "1420.405751 MHz emission of neutral hydrogen, the 'water hole' frequency favoured by SETI. Strongest toward the galactic plane; shown at the Galactic Centre."},
+
+    {"name": "Voyager 1", "category": "probe", "ra": 258.6, "dec": 12.1, "approximate": true, "description": "Most distant human-made object, in interstellar space since 2012 and still transmitting at 8.4 GHz. Position approximate for the mid-2020s."},
+    {"name": "Voyager 2", "category": "probe", "ra": 301.6, "dec": -59.6, "approximate": true, "description": "Entered interstellar space in 2018; reachable only from the southern hemisphere (DSS-43). Position approximate for the mid-2020s."},
+    {"name": "New Horizons", "category": "probe", "ra": 290.3, "dec": -20.4, "approximate": true, "description": "Pluto and Arrokoth flyby probe, now in the Kuiper Belt. Position approximate for the mid-2020s."},
+    {"name": "Pioneer 10", "category": "probe", "ra": 79.5, "dec": 26.0, "approximate": true, "description": "First probe to cross the asteroid belt; silent since 2003, drifting toward Aldebaran."}
+  ]
+}

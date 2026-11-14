@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Signal Panel · Stellarium console</title>
+  <link rel="icon" href="/static/icons/panel.svg">
+  <link rel="stylesheet" href="/static/css/panel.css">
+</head>
+<body class="theme-lime fx-scanlines fx-glow fx-flicker fx-vignette">
+
+<!-- ================= BOOT / POWER SCREEN ================= -->
+<div id="boot" class="boot">
+  <div class="boot-inner">
+    <h1 class="boot-title">SIGNAL PANEL</h1>
+    <div class="boot-sub">STELLARIUM OBSERVATORY CONSOLE</div>
+    <pre id="boot-log" class="boot-log" aria-live="polite"></pre>
+    <button id="boot-power" class="power-btn big" type="button" aria-label="Power on">
+      <span class="power-glyph"></span>
+    </button>
+    <div class="boot-hint">PRESS POWER TO INITIALIZE &middot; AUDIO STARTS ON POWER-UP</div>
+  </div>
+</div>
+
+<!-- ================= MONITOR ================= -->
+<div id="monitor" class="monitor" hidden>
+  <div id="screen" class="screen">
+    <header class="topbar">
+      <nav class="tabs" id="tabs" aria-label="Screens">
+        <button data-view="console" class="tab"><i class="ic ic-antenna"></i>CONSOLE</button>
+        <button data-view="sky" class="tab"><i class="ic ic-radar"></i>SKY</button>
+        <button data-view="database" class="tab"><i class="ic ic-database"></i>DATABASE</button>
+        <button data-view="signals" class="tab"><i class="ic ic-signal"></i>SIGNALS</button>
+        <button data-view="space" class="tab"><i class="ic ic-starmap"></i>SPACE</button>
+        <button data-view="system" class="tab"><i class="ic ic-system"></i>SYSTEM</button>
+        <button data-view="control" class="tab"><i class="ic ic-rotor"></i>CONTROL</button>
+      </nav>
+      <div class="topbar-right">
+        <span class="led" id="led-stel" title="Stellarium"></span><span class="led-label">STEL</span>
+        <span class="led" id="led-sdr" title="RTL-SDR band monitor"></span><span class="led-label">SDR</span>
+        <span class="clock" id="top-clock">--:--:--</span>
+      </div>
+    </header>
+
+    <main id="views">
+      <!-- ===== CONSOLE ===== -->
+      <section class="view" id="view-console" data-view="console">
+        <div class="console-grid">
+          <div class="console-left">
+            <div class="holo-frame">
+              <div class="holo" id="console-holo"></div>
+              <div class="holo-caption" id="console-holo-caption">STELLARIUM VIEW</div>
+            </div>
+            <div class="block">
+              <h2 class="hl">VIEW COORDINATES</h2>
+              <div class="kv"><span>AZIMUTH</span><b>:</b><span id="c-az">---</span></div>
+              <div class="kv"><span>ELEVATION</span><b>:</b><span id="c-el">---</span></div>
+            </div>
+            <div class="block">
+              <h2 class="hl">TARGET COORDINATES</h2>
+              <div class="kv"><span>AZIMUTH</span><b>:</b><span id="c-naz">---</span></div>
+              <div class="kv"><span>ELEVATION</span><b>:</b><span id="c-nel">---</span></div>
+            </div>
+          </div>
+          <div class="console-right">
+            <div class="block">
+              <h2 class="hl">STATUS</h2>
+              <div class="kv wide" title="CPU load of the PC running the panel"><span>CPU LOAD %</span><b>:</b><span id="s-sys">--</span></div>
+              <div class="kv wide" title="Memory in use on the PC running the panel"><span>MEMORY USED %</span><b>:</b><span id="s-mem">--</span></div>
+              <div class="kv wide" title="Measured rate the Stellarium view is turning in azimuth"><span>VIEW AZ SPEED °/S</span><b>:</b><span id="s-azs">--</span></div>
+              <div class="kv wide" title="Measured rate the Stellarium view is turning in elevation"><span>VIEW EL SPEED °/S</span><b>:</b><span id="s-els">--</span></div>
+              <div class="kv wide" title="Network receive rate of the PC running the panel"><span>DOWNLOAD MBIT/S</span><b>:</b><span id="s-dl">--</span></div>
+              <div class="kv wide" title="Catalogued objects (mag 7 or brighter, planets) inside the Stellarium field of view"><span>OBJECTS IN VIEW</span><b>:</b><span id="s-cd">--</span></div>
+              <div class="kv wide" title="New RTL-SDR band-monitor events in the last 24 hours"><span>RF EVENTS 24H</span><b>:</b><span id="s-ad">--</span></div>
+              <div class="kv wide" title="Objects you selected in Stellarium in the last 24 hours"><span>OBSERVATIONS 24H</span><b>:</b><span id="s-sat">--</span></div>
+              <div class="kv wide" title="Hottest CPU / thermal sensor on the PC running the panel"><span>CPU TEMPERATURE °C</span><b>:</b><span id="s-temp">--</span></div>
+            </div>
+            <div class="block">
+              <h2 class="hl">STELLARIUM VIEW</h2>
+              <div class="kv"><span>AZIMUTH</span><b>:</b><span id="r-az" class="mixed">---</span></div>
+              <div class="kv"><span>ELEVATION</span><b>:</b><span id="r-el" class="mixed">---</span></div>
+              <div class="kv"><span>FIELD OF VIEW</span><b>:</b><span id="r-fov">---</span></div>
+            </div>
+            <div class="block">
+              <h2 class="hl">TARGET</h2>
+              <div class="target-name" id="t-name">NO TARGET</div>
+              <div class="target-meta" id="t-meta"></div>
+            </div>
+            <div class="block">
+              <h2 class="hl">TIME</h2>
+              <div class="kv"><span>DATE</span><b>:</b><span id="c-date">--/--/----</span></div>
+              <div class="kv"><span>TIME</span><b>:</b><span id="c-time">--:--</span></div>
+            </div>
+            <div class="console-actions">
+              <button class="btn" id="btn-autoscan" type="button">AUTO CYCLE: ON</button>
+              <button class="btn" id="btn-next" type="button">NEXT TARGET</button>
+              <button class="btn" id="btn-follow" type="button">FOLLOW STELLARIUM</button>
+              <button class="btn" id="btn-target-open" type="button">OPEN RECORD</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SKY ===== -->
+      <section class="view fill" id="view-sky" data-view="sky" hidden>
+        <div class="split">
+          <div class="panel radar-panel">
+            <h2 class="hl">COORDINATE SYSTEM // ALT-AZ</h2>
+            <div class="radar-wrap"><canvas id="sky-radar" width="900" height="900"></canvas>
+              <div class="radar-tip" id="sky-tip" hidden></div></div>
+            <div class="legend" id="sky-legend"></div>
+          </div>
+          <div class="panel side">
+            <h2 class="hl">FILTERS</h2>
+            <div class="row">
+              <label class="field">MAG LIMIT <input type="range" id="sky-mag" min="1" max="12" step="0.5" value="7"><span id="sky-mag-v">7</span></label>
+            </div>
+            <div class="chips" id="sky-cats"></div>
+            <h2 class="hl">SELECTED</h2>
+            <div id="sky-selected" class="selected-card muted">Click an object on the radar.</div>
+            <h2 class="hl">VISIBLE NOW <span class="count" id="sky-count"></span></h2>
+            <div class="list scroll" id="sky-list"></div>
+            <h2 class="hl">LAST OPTICAL FRAME</h2>
+            <div class="optical">
+              <img id="sky-frame" alt="Most recent Stellarium screenshot">
+              <div class="optical-meta"><span id="sky-frame-meta">---</span>
+                <label class="toggle"><input type="checkbox" id="sky-frame-tint" checked> TINT</label></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DATABASE ===== -->
+      <section class="view fill" id="view-database" data-view="database" hidden>
+        <div class="db-top">
+          <div class="tiles" id="db-tiles"></div>
+          <div class="panel chart-panel"><h2 class="hl">OBSERVATIONS // 30 DAYS</h2><canvas id="db-daily" height="140"></canvas></div>
+        </div>
+        <div class="split db-split columns">
+          <div class="panel">
+            <div class="toolbar">
+              <input type="search" id="db-q" placeholder="SEARCH NAME / CONSTELLATION / CATALOG" autocomplete="off">
+              <select id="db-cat"><option value="">ALL TYPES</option></select>
+              <select id="db-src">
+                <option value="">ALL SOURCES</option>
+                <option value="stellarium">STELLARIUM (CATALOG + YOUR SELECTIONS)</option>
+                <option value="curated">RADIO &amp; SETI TARGETS</option>
+              </select>
+              <select id="db-sort">
+                <option value="recent">LAST SEEN</option>
+                <option value="sightings">MOST SIGHTED</option>
+                <option value="name">NAME</option>
+                <option value="magnitude">BRIGHTEST</option>
+              </select>
+              <label class="toggle"><input type="checkbox" id="db-seen"> OBSERVED ONLY</label>
+            </div>
+            <div class="table-wrap"><table class="grid" id="db-table">
+              <thead><tr><th></th><th>NAME</th><th>TYPE</th><th>MAG</th><th>ALT</th><th>SEEN</th><th>LAST SEEN</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+            <div class="pager" id="db-pager"></div>
+          </div>
+          <div class="panel detail" id="db-detail">
+            <div class="muted pad">SELECT A RECORD</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SIGNALS ===== -->
+      <section class="view fill" id="view-signals" data-view="signals" hidden>
+        <nav class="subtabs sig-subtabs" id="sig-subtabs"><button data-sub="rf" class="active">RF EVENTS (RTL-SDR)</button><button data-sub="sw">SHORTWAVE &amp; NUMBERS STATIONS</button></nav>
+        <div class="sig-pane" data-sub="rf">
+        <div class="tiles" id="rf-tiles"></div>
+        <div class="split three">
+          <div class="panel"><h2 class="hl">BAND NOISE FLOOR // 24H</h2><canvas id="rf-noise" height="180"></canvas><div class="legend" id="rf-noise-legend"></div></div>
+          <div class="panel"><h2 class="hl">EVENTS PER DAY</h2><canvas id="rf-daily" height="180"></canvas></div>
+          <div class="panel"><h2 class="hl">LATEST SWEEP <select id="rf-spec-band" class="inline" aria-label="Band"></select></h2><canvas id="rf-spectrum" height="180"></canvas></div>
+        </div>
+        <div class="split db-split columns">
+          <div class="panel">
+            <div class="toolbar">
+              <select id="rf-band"><option value="">ALL BANDS</option></select>
+              <select id="rf-score">
+                <option value="">ANY SCORE</option><option value="40">SCORE 40+</option>
+                <option value="60">SCORE 60+</option><option value="75">SCORE 75+</option>
+              </select>
+              <span class="muted" id="rf-status"></span>
+            </div>
+            <div class="table-wrap"><table class="grid" id="rf-table">
+              <thead><tr><th>#</th><th>UTC</th><th>BAND</th><th>FREQ MHz</th><th>SNR</th><th>SCORE</th><th>CLASS</th><th>SEEN</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+            <div class="pager" id="rf-pager"></div>
+          </div>
+          <div class="panel detail" id="rf-detail"><div class="muted pad">SELECT A SIGNAL</div></div>
+        </div>
+        </div>
+        <div class="sig-pane" data-sub="sw" hidden>
+          <div class="tiles" id="sw-tiles"></div>
+          <div class="split db-split columns sw-cols">
+            <div class="panel">
+              <h2 class="hl">ALWAYS ON AIR</h2>
+              <div class="sw-cont" id="sw-continuous"></div>
+              <div class="toolbar">
+                <h2 class="hl inline-hl">PRIYOM SCHEDULE // NEXT 12H</h2>
+                <select id="sw-family" aria-label="Station family"><option value="">ALL FAMILIES</option></select>
+                <label class="toggle"><input type="checkbox" id="sw-hide-search" checked> HIDE "SEARCH" ENTRIES</label>
+              </div>
+              <div class="table-wrap">
+                <table class="grid" id="sw-table">
+                  <thead><tr><th>UTC</th><th>STATUS</th><th>STATION</th><th>FREQ kHz</th><th>MODE</th><th>TARGET</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="map-credit">SCHEDULE &copy; PRIYOM.ORG (CC BY-NC-SA 4.0) · SCHEDULED START TIMES; A TRANSMISSION MAY NOT OCCUR · "ON AIR" = STARTED WITHIN THE LAST <span id="sw-onair-min">15</span> MIN</div>
+            </div>
+            <div class="panel detail" id="sw-detail"><div class="muted pad">SELECT A STATION OR TRANSMISSION</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SPACE (NASA / JAXA) ===== -->
+      <section class="view fill" id="view-space" data-view="space" hidden>
+        <nav class="subtabs space-tabs" id="space-tabs"></nav>
+        <div class="space-status muted" id="space-status"></div>
+        <div class="split db-split columns space-cols">
+          <div class="panel">
+            <div class="table-wrap"><div class="space-grid" id="space-grid"></div></div>
+            <div class="pager" id="space-pager"></div>
+          </div>
+          <div class="panel detail" id="space-detail"><div class="muted pad">SELECT A POST</div></div>
+        </div>
+      </section>
+
+      <!-- ===== SYSTEM ===== -->
+      <section class="view" id="view-system" data-view="system" hidden>
+        <div class="tiles" id="sys-tiles"></div>
+        <div class="split three">
+          <div class="panel"><h2 class="hl">CPU CORES</h2><div id="sys-cores" class="cores"></div>
+            <h2 class="hl">STORAGE</h2><div id="sys-disks"></div></div>
+          <div class="panel"><h2 class="hl">SERVICES</h2><div id="sys-services"></div>
+            <h2 class="hl">DATA SOURCES</h2><div id="sys-sources"></div></div>
+          <div class="panel"><h2 class="hl">MACHINE</h2><div id="sys-static"></div>
+            <h2 class="hl">RTL-SDR</h2><div id="sys-avail"></div></div>
+        </div>
+        <div class="split">
+          <div class="panel"><h2 class="hl">LOAD // <select id="sys-hours" class="inline"><option value="6">6H</option><option value="24" selected>24H</option><option value="72">3D</option><option value="168">7D</option></select></h2>
+            <canvas id="sys-load" height="200"></canvas><div class="legend" id="sys-load-legend"></div></div>
+          <div class="panel"><h2 class="hl">NETWORK + TEMPERATURE</h2><canvas id="sys-net" height="200"></canvas><div class="legend" id="sys-net-legend"></div></div>
+        </div>
+      </section>
+
+      <!-- ===== CONTROL ===== -->
+      <section class="view" id="view-control" data-view="control" hidden>
+        <div class="split">
+          <div class="panel">
+            <h2 class="hl">ANTENNA CONTROL // STELLARIUM</h2>
+            <p class="note">Commands move the live Stellarium view. Your original view is saved on the first command and
+              <b>restored automatically</b> after <span id="ctl-restore-min">5</span> idle minutes, or when you press RELEASE.</p>
+            <div id="ctl-login" class="login">
+              <label class="field">CONTROL PIN <input type="password" id="ctl-pin" inputmode="numeric" autocomplete="off" maxlength="32"></label>
+              <button class="btn" id="ctl-login-btn" type="button">AUTHORIZE</button>
+              <div class="muted" id="ctl-login-msg"></div>
+            </div>
+            <div id="ctl-panel" hidden>
+              <div class="row">
+                <input type="search" id="ctl-q" placeholder="FIND OBJECT IN STELLARIUM" autocomplete="off">
+                <button class="btn" id="ctl-find" type="button">FIND</button>
+              </div>
+              <div class="chips" id="ctl-results"></div>
+              <div class="row">
+                <label class="field">AZ <input type="number" id="ctl-az" min="0" max="360" step="0.1" value="180"></label>
+                <label class="field">EL <input type="number" id="ctl-el" min="-10" max="90" step="0.1" value="45"></label>
+                <button class="btn" id="ctl-goto" type="button">SLEW</button>
+              </div>
+              <div class="dpad">
+                <button class="btn" data-nudge="0,5" type="button">EL +5</button>
+                <button class="btn" data-nudge="-10,0" type="button">AZ -10</button>
+                <button class="btn" data-nudge="10,0" type="button">AZ +10</button>
+                <button class="btn" data-nudge="0,-5" type="button">EL -5</button>
+              </div>
+              <div class="row">
+                <label class="field">FOV <input type="range" id="ctl-fov" min="1" max="120" step="1" value="60"><span id="ctl-fov-v">60</span>&deg;</label>
+                <button class="btn" id="ctl-fov-set" type="button">SET FOV</button>
+              </div>
+              <div class="row">
+                <button class="btn danger" id="ctl-release" type="button">RELEASE + RESTORE VIEW</button>
+                <button class="btn" id="ctl-logout" type="button">LOCK</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2 class="hl">STELLARIUM STATE</h2>
+            <div id="ctl-state"></div>
+            <div class="holo-frame small"><div class="holo" id="ctl-holo"></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="ticker" id="ticker"><div class="ticker-track" id="ticker-track">AWAITING DATA LINK...</div></footer>
+  </div>
+
+  <div class="bezel-controls">
+    <button class="icon-btn" id="btn-screensaver" type="button" title="Screensaver (S)"><i class="ic ic-starmap"></i></button>
+    <button class="icon-btn" id="btn-fullscreen" type="button" title="Fullscreen (F)"><i class="ic ic-all"></i></button>
+    <button class="icon-btn" id="btn-mute" type="button" title="Mute (M)"><i class="ic ic-audio"></i></button>
+    <button class="icon-btn" id="btn-options" type="button" title="Options (O)"><i class="ic ic-wrench"></i></button>
+    <span class="bezel-led" id="bezel-led"></span>
+    <button class="power-btn" id="btn-power" type="button" title="Power off (stops audio)"><span class="power-glyph"></span></button>
+  </div>
+</div>
+
+<!-- ================= OPTIONS ================= -->
+<div class="modal" id="options" hidden role="dialog" aria-modal="true" aria-labelledby="opt-title">
+  <div class="modal-box">
+    <div class="modal-head"><h2 class="hl" id="opt-title">OPTIONS</h2>
+      <nav class="subtabs" id="opt-tabs">
+        <button data-tab="audio" class="active">AUDIO</button><button data-tab="display">DISPLAY</button>
+        <button data-tab="console">CONSOLE</button><button data-tab="about">ABOUT</button>
+      </nav>
+      <button class="btn" id="opt-close" type="button">CLOSE</button></div>
+    <div class="modal-body">
+      <div class="opt-tab" data-tab="audio" id="opt-audio"></div>
+      <div class="opt-tab" data-tab="display" id="opt-display" hidden></div>
+      <div class="opt-tab" data-tab="console" id="opt-console" hidden></div>
+      <div class="opt-tab" data-tab="about" id="opt-about" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="fx-layer scanlines"></div>
+<div class="fx-layer vignette"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="/static/js/util.js"></script>
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/holo.js"></script>
+<script src="/static/js/charts.js"></script>
+<script src="/static/js/views.js"></script>
+<script src="/static/js/shortwave.js"></script>
+<script src="/static/js/space.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

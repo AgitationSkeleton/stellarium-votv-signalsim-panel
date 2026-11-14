@@ -1,0 +1,20 @@
+# your own settings and control PIN
+config/panel.local.json
+
+# runtime data
+data/
+logs/
+*.sqlite3
+*.sqlite3-*
+
+# python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
